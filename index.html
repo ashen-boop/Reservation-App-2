@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gourmet · Reserve & Order</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        body {
+            background: #f8f6f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            width: 100%;
+            max-width: 100%;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.15);
+            padding: 2rem 2.5rem;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-close-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: #f2efe9;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3e3e3e;
+            z-index: 100;
+        }
+
+        .app-close-btn:hover {
+            background: #e5e0d7;
+            transform: rotate(90deg);
+        }
+
+        .app-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-right: 3rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand i {
+            font-size: 2.2rem;
+            color: #c0392b;
+        }
+
+        .brand h1 {
+            font-weight: 700;
+            font-size: 1.9rem;
+            letter-spacing: -0.5px;
+            color: #1e1e1e;
+        }
+
+        .brand span {
+            color: #c0392b;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #f2efe9;
+            padding: 0.5rem 1.2rem 0.5rem 0.8rem;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .user-profile:hover {
+            background: #e5e0d7;
+        }
+
+        .user-profile i {
+            font-size: 1.4rem;
+            color: #c0392b;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .badge-delivery {
+            background: #eaf4e6;
+            padding: 0.5rem 1.2rem;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e6f2d;
+            white-space: nowrap;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            background: #f2efe9;
+            padding: 6px;
+            border-radius: 60px;
+            margin-bottom: 2.5rem;
+        }
+
+        .tab-btn {
+            flex: 1 1 auto;
+            padding: 0.8rem 1.8rem;
+            border: none;
+            background: transparent;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #3e3e3e;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .tab-btn i {
+            font-size: 1.1rem;
+        }
+
+        .tab-btn.active {
+            background: white;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
+            color: #c0392b;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .panel {
+            display: none;
+            animation: fadeSlide 0.25s ease;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        @keyframes fadeSlide {
+            0% { opacity: 0.4; transform: translateY(6px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .grid-3col {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: #fcfcfa;
+            border-radius: 28px;
+            padding: 1.8rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            border: 1px solid #efede8;
+            transition: all 0.2s;
+        }
+
+        .card:hover {
+            border-color: #ddd8cd;
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #1f1f1f;
+        }
+
+        .card-title i {
+            color: #c0392b;
+            font-size: 1.3rem;
+            width: 2rem;
+        }
+
+        .badge {
+            background: #f2efe9;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #4d4d4d;
+        }
+
+        .form-group {
+            margin-bottom: 1.4rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #3d3d3d;
+            margin-bottom: 6px;
+        }
+
+        .form-group input, 
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1.5px solid #e4e0d8;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            background: white;
+            transition: 0.2s;
+            outline: none;
+            max-width: 100%;
+        }
+
+        .form-group input:focus, 
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #c0392b;
+            box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.08);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 0.9rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 6px 14px rgba(192, 57, 43, 0.2);
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            background: #a83226;
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #f2efe9;
+            color: #2f2f2f;
+            border: none;
+            padding: 0.9rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e0d7;
+        }
+
+        .btn-success {
+            background: #1e6f2d;
+            color: white;
+            border: none;
+            padding: 0.9rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 6px 14px rgba(30, 111, 45, 0.2);
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-success:hover {
+            background: #155a22;
+            transform: scale(0.98);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid #d0cbc1;
+            color: #2f2f2f;
+            padding: 0.8rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-outline:hover {
+            background: #f2efe9;
+            border-color: #b0a89a;
+        }
+
+        .btn-danger-outline {
+            background: transparent;
+            border: 1.5px solid #c0392b;
+            color: #c0392b;
+            padding: 0.8rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-danger-outline:hover {
+            background: #fde8e8;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.9rem 0;
+            border-bottom: 1px solid #eeebe5;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .menu-item-name {
+            font-weight: 600;
+        }
+
+        .menu-item-desc {
+            font-size: 0.8rem;
+            color: #6b655a;
+        }
+
+        .menu-item-price {
+            font-weight: 700;
+            color: #1e1e1e;
+        }
+
+        .menu-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .qty-selector {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f1eee8;
+            border-radius: 30px;
+            padding: 2px 8px;
+        }
+
+        .qty-selector button {
+            background: transparent;
+            border: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2f2f2f;
+        }
+
+        .qty-selector button:hover {
+            background: #ddd8cf;
+        }
+
+        .qty-selector span {
+            min-width: 24px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .preorder-summary {
+            background: #f8f5ef;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-top: 1.8rem;
+        }
+
+        .delivery-banner {
+            background: #eaf4e6;
+            border-radius: 20px;
+            padding: 1.2rem 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+            gap: 0.5rem;
+        }
+
+        .delivery-banner i {
+            color: #1e6f2d;
+            font-size: 1.6rem;
+        }
+
+        .badge-free {
+            background: #1e6f2d;
+            color: white;
+            border-radius: 60px;
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-message {
+            margin-top: 1.5rem;
+            padding: 1rem 1.4rem;
+            background: #f0ede6;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .status-message i {
+            color: #c0392b;
+            font-size: 1.3rem;
+        }
+
+        .status-message.success {
+            background: #e6f4e6;
+        }
+
+        .status-message.success i {
+            color: #1e6f2d;
+        }
+
+        .status-message.warning {
+            background: #fef6e0;
+        }
+
+        .status-message.warning i {
+            color: #d4a017;
+        }
+
+        .reservation-card {
+            background: #fcfaf7;
+            border-radius: 16px;
+            padding: 1.2rem;
+            border-left: 4px solid #c0392b;
+            margin-bottom: 1rem;
+        }
+
+        .reservation-card .status {
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            white-space: nowrap;
+        }
+
+        .status.confirmed {
+            background: #e6f4e6;
+            color: #1e6f2d;
+        }
+
+        .status.pending {
+            background: #fef6e0;
+            color: #8a6d00;
+        }
+
+        .status.cancelled {
+            background: #fde8e8;
+            color: #b33c3c;
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .time-slot {
+            padding: 0.5rem;
+            text-align: center;
+            border: 1.5px solid #e4e0d8;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .time-slot:hover:not(.unavailable) {
+            border-color: #c0392b;
+            background: #fdf6f5;
+        }
+
+        .time-slot.selected {
+            border-color: #c0392b;
+            background: #c0392b;
+            color: white;
+        }
+
+        .time-slot.unavailable {
+            opacity: 0.4;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        .dietary-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .dietary-tag {
+            padding: 0.3rem 1rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1.5px solid #e4e0d8;
+            transition: all 0.2s;
+            background: white;
+            white-space: nowrap;
+        }
+
+        .dietary-tag:hover {
+            border-color: #c0392b;
+        }
+
+        .dietary-tag.active {
+            background: #c0392b;
+            color: white;
+            border-color: #c0392b;
+        }
+
+        .menu-item-tag {
+            font-size: 0.65rem;
+            padding: 0.1rem 0.6rem;
+            border-radius: 30px;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 0.3rem;
+        }
+
+        .tag-veg {
+            background: #e6f4e6;
+            color: #1e6f2d;
+        }
+
+        .tag-spicy {
+            background: #fde8e8;
+            color: #b33c3c;
+        }
+
+        .tag-gf {
+            background: #fef6e0;
+            color: #8a6d00;
+        }
+
+        .favorite-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #d0cbc1;
+            font-size: 1.2rem;
+            transition: 0.2s;
+        }
+
+        .favorite-btn:hover {
+            color: #c0392b;
+        }
+
+        .favorite-btn.active {
+            color: #c0392b;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .toggle-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #c0392b;
+            flex-shrink: 0;
+        }
+
+        .order-total {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .mt-2 { margin-top: 1rem; }
+        .text-small { font-size: 0.9rem; color: #4d4d4d; }
+        .text-muted { color: #6b655a; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .gap-1 { gap: 0.5rem; }
+        .gap-2 { gap: 1rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e6f2d;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+            max-width: 90vw;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        .toast i {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .preferences-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .preferences-actions .btn-success {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        /* Custom Alert Modal */
+        .alert-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .alert-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .alert-modal {
+            background: white;
+            border-radius: 32px;
+            padding: 2.5rem 3rem;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            animation: slideDown 0.3s ease;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        }
+
+        @keyframes slideDown {
+            0% { transform: translateY(-30px) scale(0.95); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .alert-modal .alert-icon {
+            font-size: 4rem;
+            color: #1e6f2d;
+            margin-bottom: 1rem;
+        }
+
+        .alert-modal h2 {
+            font-size: 1.8rem;
+            color: #1e1e1e;
+            margin-bottom: 0.5rem;
+        }
+
+        .alert-modal p {
+            color: #6b655a;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-modal .alert-details {
+            background: #f8f6f2;
+            border-radius: 16px;
+            padding: 1rem;
+            margin: 1rem 0 1.5rem 0;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        .alert-modal .alert-details div {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #eeebe5;
+        }
+
+        .alert-modal .alert-details div:last-child {
+            border-bottom: none;
+        }
+
+        .alert-modal .alert-details .label {
+            color: #6b655a;
+            font-weight: 500;
+        }
+
+        .alert-modal .alert-details .value {
+            color: #1e1e1e;
+            font-weight: 600;
+        }
+
+        .alert-modal .btn-primary {
+            width: auto;
+            padding: 0.8rem 3rem;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-3col {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .app-container {
+                padding: 1.5rem;
+                border-radius: 24px;
+            }
+            .app-header {
+                padding-right: 2rem;
+            }
+            .grid-2col, .grid-3col {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            .tab-btn {
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem;
+                white-space: nowrap;
+            }
+            .time-slots {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .app-close-btn {
+                top: 1rem;
+                right: 1rem;
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+            .badge-delivery {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+            .preferences-actions {
+                flex-direction: column;
+            }
+            .preferences-actions .btn-success {
+                flex: 1;
+                width: 100%;
+            }
+            .alert-modal {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 1rem;
+                border-radius: 20px;
+            }
+            .app-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+                padding-right: 1rem;
+            }
+            .brand h1 {
+                font-size: 1.6rem;
+            }
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .time-slots {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .app-close-btn {
+                top: 0.8rem;
+                right: 0.8rem;
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+            .menu-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .menu-item-actions {
+                justify-content: flex-end;
+            }
+            .card {
+                padding: 1.2rem;
+            }
+            .toast {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+                max-width: calc(100vw - 2rem);
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+            }
+            .alert-modal {
+                padding: 1.5rem 1rem;
+            }
+            .alert-modal h2 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container" id="appContainer">
+
+    <button class="app-close-btn" onclick="closeApp()" title="Close app">
+        <i class="fas fa-times"></i>
+    </button>
+
+    <div class="app-header">
+        <div class="brand">
+            <i class="fas fa-utensils"></i>
+            <h1>Gourmet<span>·</span>app</h1>
+        </div>
+        <div class="header-actions">
+            <div class="badge-delivery">
+                <i class="fas fa-truck"></i> free delivery
+            </div>
+            <div class="user-profile" onclick="switchToAccountTab()">
+                <i class="fas fa-user-circle"></i>
+                <span>Alex</span>
+                <i class="fas fa-chevron-down" style="font-size: 0.7rem;"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="tab-reserve"><i class="fas fa-calendar-check"></i> Reserve</button>
+        <button class="tab-btn" data-tab="tab-preorder"><i class="fas fa-shopping-bag"></i> Pre‑order</button>
+        <button class="tab-btn" data-tab="tab-delivery"><i class="fas fa-motorcycle"></i> Delivery</button>
+        <button class="tab-btn" data-tab="tab-account"><i class="fas fa-user"></i> Account</button>
+    </div>
+
+    <!-- ============ RESERVATION PANEL ============ -->
+    <div id="tab-reserve" class="panel active">
+        <div class="grid-2col">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-clock"></i> Make a reservation
+                    <span class="badge">2 min avg</span>
+                </div>
+                <form id="reservationForm">
+                    <div class="form-group">
+                        <label>Full name <span class="text-muted">*</span></label>
+                        <input type="text" placeholder="e.g. Jamie Oliver" id="resName" value="Alex Rivera">
+                    </div>
+                    <div class="form-group">
+                        <label>Email <span class="text-muted">*</span></label>
+                        <input type="email" placeholder="email@example.com" id="resEmail" value="alex@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone <span class="text-muted">*</span></label>
+                        <input type="tel" placeholder="(555) 000-9999" id="resPhone" value="+1 555 0199">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Date <span class="text-muted">*</span></label>
+                            <input type="date" id="resDate" value="2026-08-15">
+                        </div>
+                        <div class="form-group">
+                            <label>Guests <span class="text-muted">*</span></label>
+                            <select id="resGuests">
+                                <option value="1">1 person</option>
+                                <option value="2" selected>2 people</option>
+                                <option value="3">3 people</option>
+                                <option value="4">4 people</option>
+                                <option value="5">5 people</option>
+                                <option value="6">6 people</option>
+                                <option value="7">7 people</option>
+                                <option value="8">8+ people</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Available time slots <span class="text-muted">*</span></label>
+                        <div class="time-slots" id="timeSlots">
+                            <div class="time-slot" data-time="17:00">5:00 PM</div>
+                            <div class="time-slot" data-time="17:30">5:30 PM</div>
+                            <div class="time-slot selected" data-time="18:00">6:00 PM</div>
+                            <div class="time-slot" data-time="18:30">6:30 PM</div>
+                            <div class="time-slot unavailable" data-time="19:00">7:00 PM</div>
+                            <div class="time-slot" data-time="19:30">7:30 PM</div>
+                            <div class="time-slot" data-time="20:00">8:00 PM</div>
+                            <div class="time-slot" data-time="20:30">8:30 PM</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Occasion</label>
+                        <select id="resOccasion">
+                            <option value="">-- Select occasion --</option>
+                            <option value="dinner">Casual Dinner</option>
+                            <option value="birthday" selected>Birthday</option>
+                            <option value="anniversary">Anniversary</option>
+                            <option value="business">Business Dinner</option>
+                            <option value="date">Date Night</option>
+                            <option value="family">Family Gathering</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Seating preference</label>
+                        <select id="resSeating">
+                            <option value="">-- Any --</option>
+                            <option value="window" selected>Window Seat</option>
+                            <option value="booth">Booth</option>
+                            <option value="outdoor">Outdoor Patio</option>
+                            <option value="bar">Bar Area</option>
+                            <option value="private">Private Room</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dietary restrictions</label>
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="dietVegan"> Vegan
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="dietVegetarian"> Vegetarian
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="dietGluten"> Gluten-Free
+                            </label>
+                            <label class="toggle-label">
+                                <input type="checkbox" id="dietAllergy"> Allergies
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Special requests</label>
+                        <textarea rows="2" placeholder="e.g. table by the window, anniversary..." id="resSpecial">Window seat, celebrating birthday</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="resReminder" checked> 
+                            Send SMS reminder 2 hours before
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary"><i class="fas fa-check-circle"></i> Confirm reservation</button>
+                </form>
+                <div id="reservationStatus" class="status-message">
+                    <i class="fas fa-circle-info"></i> <span id="resStatusText">Select date & time to check availability</span>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-calendar-alt"></i> Your reservations
+                        <span class="badge">3 upcoming</span>
+                    </div>
+                    
+                    <div class="reservation-card">
+                        <div class="flex-between mb-1">
+                            <strong>Table for 2</strong>
+                            <span class="status confirmed"><i class="fas fa-check-circle"></i> Confirmed</span>
+                        </div>
+                        <div class="text-small">
+                            <i class="far fa-calendar"></i> Today, 7:30 PM
+                            <span class="text-muted">·</span>
+                            <i class="fas fa-user-friends"></i> 2 guests
+                            <span class="text-muted">·</span>
+                            <i class="fas fa-map-marker-alt"></i> Window seat
+                        </div>
+                        <div class="flex-between mt-2">
+                            <span class="text-small text-muted">Reservation #R-2024-0815</span>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <button class="btn-outline" style="padding: 0.3rem 1rem; font-size: 0.8rem;">Modify</button>
+                                <button class="btn-danger-outline" style="padding: 0.3rem 1rem; font-size: 0.8rem;">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="reservation-card" style="border-left-color: #d4a017;">
+                        <div class="flex-between mb-1">
+                            <strong>Table for 4</strong>
+                            <span class="status pending"><i class="fas fa-clock"></i> Pending</span>
+                        </div>
+                        <div class="text-small">
+                            <i class="far fa-calendar"></i> Aug 15, 8:15 PM
+                            <span class="text-muted">·</span>
+                            <i class="fas fa-user-friends"></i> 4 guests
+                            <span class="text-muted">·</span>
+                            <i class="fas fa-map-marker-alt"></i> Outdoor patio
+                        </div>
+                        <div class="flex-between mt-2">
+                            <span class="text-small text-muted">Reservation #R-2024-0816</span>
+                            <button class="btn-danger-outline" style="padding: 0.3rem 1rem; font-size: 0.8rem;">Cancel</button>
+                        </div>
+                    </div>
+
+                    <div class="reservation-card" style="border-left-color: #b33c3c;">
+                        <div class="flex-between mb-1">
+                            <strong>Table for 6</strong>
+                            <span class="status cancelled"><i class="fas fa-times-circle"></i> Cancelled</span>
+                        </div>
+                        <div class="text-small">
+                            <i class="far fa-calendar"></i> Aug 10, 7:00 PM
+                            <span class="text-muted">·</span>
+                            <i class="fas fa-user-friends"></i> 6 guests
+                        </div>
+                        <div class="mt-2">
+                            <span class="text-small text-muted">Cancelled on Aug 9</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-secondary mt-2" onclick="alert('📅 View all your reservations, past and future.')">
+                        <i class="fas fa-history"></i> View all reservations
+                    </button>
+                </div>
+
+                <div class="card mt-2" style="background: #faf8f4;">
+                    <div class="card-title" style="margin-bottom: 0.5rem;">
+                        <i class="fas fa-gift"></i> Special offers
+                    </div>
+                    <div class="delivery-banner" style="margin-top: 0; background: white; border: 1px dashed #c0392b;">
+                        <span><i class="fas fa-wine-glass-alt"></i> Free welcome drink on arrival</span>
+                        <span class="badge-free">Book now</span>
+                    </div>
+                    <div class="delivery-banner" style="margin-top: 0.8rem; background: white; border: 1px dashed #1e6f2d;">
+                        <span><i class="fas fa-percent"></i> 10% off for reservations before 6 PM</span>
+                        <span class="badge-free">Limited time</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ PRE-ORDER PANEL ============ -->
+    <div id="tab-preorder" class="panel">
+        <div class="grid-2col">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-utensil-spoon"></i> Pre‑order menu
+                    <span class="badge">5 items</span>
+                </div>
+                
+                <div class="dietary-tags">
+                    <span class="dietary-tag active" data-filter="all">All</span>
+                    <span class="dietary-tag" data-filter="veg">🌿 Vegetarian</span>
+                    <span class="dietary-tag" data-filter="vegan">🌱 Vegan</span>
+                    <span class="dietary-tag" data-filter="gf">🚫 Gluten-Free</span>
+                    <span class="dietary-tag" data-filter="spicy">🌶️ Spicy</span>
+                </div>
+
+                <div id="menuList"></div>
+
+                <div class="preorder-summary">
+                    <div class="flex-between">
+                        <span><strong>Subtotal</strong></span>
+                        <span class="order-total" id="preorderSubtotal">$0.00</span>
+                    </div>
+                    <div class="flex-between text-small text-muted">
+                        <span>Service fee</span>
+                        <span>$0.00</span>
+                    </div>
+                    <div class="flex-between text-small text-muted" style="border-top: 1px solid #e4e0d8; padding-top: 0.5rem; margin-top: 0.5rem;">
+                        <span>Estimated tax</span>
+                        <span id="preorderTax">$0.00</span>
+                    </div>
+                    <div class="flex-between" style="font-weight: 700; font-size: 1.2rem; border-top: 2px solid #ddd8cd; padding-top: 0.8rem; margin-top: 0.8rem;">
+                        <span>Total</span>
+                        <span id="preorderGrandTotal">$0.00</span>
+                    </div>
+                    <button class="btn-primary" style="margin-top: 1rem;" id="submitPreorderBtn">
+                        <i class="fas fa-bag-shopping"></i> Place pre‑order
+                    </button>
+                    <div id="preorderStatus" class="status-message" style="margin-top: 1rem;">
+                        <i class="fas fa-circle-info"></i> <span id="preorderStatusText">Add items from the menu</span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-clock"></i> Pickup & details</div>
+                    <div class="form-group">
+                        <label>Pickup time <span class="text-muted">*</span></label>
+                        <select id="pickupTime">
+                            <option value="asap">ASAP (15–20 min)</option>
+                            <option value="30min" selected>In 30 minutes</option>
+                            <option value="45min">In 45 minutes</option>
+                            <option value="60min">In 1 hour</option>
+                            <option value="90min">In 1.5 hours</option>
+                            <option value="custom">Custom time</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="customTimeGroup" style="display:none;">
+                        <label>Custom time</label>
+                        <input type="time" id="customPickupTime" value="18:30">
+                    </div>
+                    <div class="form-group">
+                        <label>Special instructions</label>
+                        <input type="text" placeholder="e.g. extra napkins, no onion" id="preorderNote" value="Extra sauce on the side">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Payment method</label>
+                        <select id="preorderPayment">
+                            <option value="card">💳 Credit Card (•••• 4242)</option>
+                            <option value="paypal">💰 PayPal</option>
+                            <option value="apple">📱 Apple Pay</option>
+                            <option value="cash">💵 Cash (in-store)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="preorderRewards" checked> 
+                            Apply loyalty points (247 pts = $2.47)
+                        </label>
+                    </div>
+
+                    <div class="delivery-banner" style="background: #f2efe9; margin-top: 1rem;">
+                        <span><i class="fas fa-store"></i> Pick up in-store</span>
+                        <span style="font-weight: 500;">or choose delivery tab</span>
+                    </div>
+
+                    <div style="background: #faf8f4; border-radius: 20px; padding: 1rem; margin-top: 1.5rem; border: 1px dashed #c0b8a8;">
+                        <i class="fas fa-tag" style="color: #c0392b;"></i> 
+                        <strong>Pre‑order benefit</strong> — skip the wait, your food is ready when you arrive.
+                    </div>
+                </div>
+
+                <div class="card mt-2">
+                    <div class="card-title"><i class="fas fa-heart"></i> Your favorites</div>
+                    <div class="text-small text-muted" style="padding: 0.5rem 0;">
+                        <i class="fas fa-utensil-spoon"></i> Truffle Risotto
+                        <span class="text-muted">·</span>
+                        <i class="fas fa-utensil-spoon"></i> Grilled Salmon
+                    </div>
+                    <button class="btn-secondary mt-2" onclick="alert('❤️ View all your favorite items for quick reordering.')">
+                        <i class="fas fa-heart"></i> View favorites
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ DELIVERY PANEL ============ -->
+    <div id="tab-delivery" class="panel">
+        <div class="grid-2col">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-truck-fast"></i> Online delivery
+                    <span class="badge">Free</span>
+                </div>
+                
+                <div style="background: #eaf4e6; border-radius: 20px; padding: 1rem 1.4rem; margin-bottom: 1.8rem; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <i class="fas fa-circle-check" style="color: #1e6f2d;"></i>
+                    <span><strong>Free delivery</strong> on all orders · no minimum</span>
+                    <span style="margin-left: auto; background: #1e6f2d; color: white; padding: 0.2rem 0.8rem; border-radius: 30px; font-size: 0.8rem; font-weight: 600; white-space: nowrap;">30-45 min</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Delivery address <span class="text-muted">*</span></label>
+                    <input type="text" placeholder="Street address" id="deliveryAddress" value="42 Gourmet Lane">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Apt / Suite</label>
+                        <input type="text" placeholder="Apt" id="deliveryUnit" value="5B">
+                    </div>
+                    <div class="form-group">
+                        <label>Zip code <span class="text-muted">*</span></label>
+                        <input type="text" placeholder="Zip" id="deliveryZip" value="10001">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone <span class="text-muted">*</span></label>
+                        <input type="tel" placeholder="(555) 000-9999" id="deliveryPhone" value="+1 555 0199">
+                    </div>
+                    <div class="form-group">
+                        <label>Delivery instructions</label>
+                        <input type="text" placeholder="Gate code, landmark..." id="deliveryNote" value="Ring bell, buzzer 502">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Delivery preference</label>
+                    <select id="deliveryPreference">
+                        <option value="door">🚪 Leave at door</option>
+                        <option value="hand" selected>👋 Hand to me</option>
+                        <option value="reception">🏢 Leave with reception</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 1.2rem;">
+                    <p style="font-weight: 600; margin-bottom: 0.5rem;"><i class="fas fa-pizza-slice"></i> Add items for delivery</p>
+                    <div id="deliveryMenuList"></div>
+                </div>
+
+                <div class="form-group mt-2">
+                    <label>Tip</label>
+                    <select id="deliveryTip">
+                        <option value="0">No tip</option>
+                        <option value="2">$2.00</option>
+                        <option value="3" selected>$3.00 (15%)</option>
+                        <option value="5">$5.00 (25%)</option>
+                        <option value="custom">Custom amount</option>
+                    </select>
+                </div>
+
+                <button class="btn-primary" style="margin-top: 1.5rem;" id="deliveryOrderBtn">
+                    <i class="fas fa-motorcycle"></i> Place delivery order
+                </button>
+                <div id="deliveryStatus" class="status-message" style="margin-top: 1.5rem;">
+                    <i class="fas fa-circle-info"></i> <span id="deliveryStatusText">Add items & address to continue</span>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-receipt"></i> Order summary</div>
+                    <div id="deliverySummary">
+                        <div class="flex-between" style="padding: 0.8rem 0; border-bottom: 1px solid #eae5dd;">
+                            <span>Subtotal</span> <span id="deliverySubtotal">$0.00</span>
+                        </div>
+                        <div class="flex-between" style="padding: 0.8rem 0; border-bottom: 1px solid #eae5dd;">
+                            <span>Delivery fee</span> <span style="color: #1e6f2d; font-weight: 600;">$0.00 (free)</span>
+                        </div>
+                        <div class="flex-between" style="padding: 0.8rem 0; border-bottom: 1px solid #eae5dd;">
+                            <span>Estimated tax</span> <span id="deliveryTax">$0.00</span>
+                        </div>
+                        <div class="flex-between" style="padding: 0.8rem 0; border-bottom: 1px solid #eae5dd;">
+                            <span>Tip</span> <span id="deliveryTipAmount">$3.00</span>
+                        </div>
+                        <div class="flex-between" style="padding: 0.8rem 0; font-weight: 700; font-size: 1.2rem;">
+                            <span>Total</span> <span id="deliveryTotal">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div style="background: #f5f2eb; border-radius: 20px; padding: 1.2rem; margin-top: 1.2rem;">
+                        <div class="flex-between">
+                            <span><i class="fas fa-clock"></i> Estimated delivery</span>
+                            <span><strong>30–45 min</strong></span>
+                        </div>
+                        <div class="flex-between text-small text-muted">
+                            <span>Distance</span>
+                            <span>2.3 miles</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-secondary mt-2" onclick="alert('🔄 Track your delivery status in real-time.')">
+                        <i class="fas fa-map-marked-alt"></i> Track order
+                    </button>
+                </div>
+
+                <div class="card mt-2">
+                    <div class="card-title"><i class="fas fa-clock"></i> Recent orders</div>
+                    <div class="text-small" style="padding: 0.5rem 0; border-bottom: 1px solid #eae5dd;">
+                        <div class="flex-between">
+                            <span><i class="fas fa-utensil-spoon"></i> Classic Burger x2</span>
+                            <span>$37.50</span>
+                        </div>
+                        <div class="text-muted">Aug 12, 7:30 PM · Delivered</div>
+                    </div>
+                    <div class="text-small" style="padding: 0.5rem 0;">
+                        <div class="flex-between">
+                            <span><i class="fas fa-utensil-spoon"></i> Grilled Salmon</span>
+                            <span>$28.00</span>
+                        </div>
+                        <div class="text-muted">Aug 10, 6:15 PM · Delivered</div>
+                    </div>
+                    <button class="btn-outline mt-2" style="width: 100%; justify-content: center;">
+                        <i class="fas fa-history"></i> Order history
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ ACCOUNT PANEL ============ -->
+    <div id="tab-account" class="panel">
+        <div class="grid-3col">
+            <div class="card">
+                <div class="card-title"><i class="fas fa-user-circle"></i> Profile</div>
+                <div style="text-align: center; padding: 1rem 0;">
+                    <i class="fas fa-user-circle" style="font-size: 4rem; color: #c0392b;"></i>
+                    <h3 style="margin-top: 0.5rem;">Alex Rivera</h3>
+                    <p class="text-muted text-small">alex@example.com</p>
+                    <p class="text-muted text-small">+1 555 0199</p>
+                    <p class="text-muted text-small">Member since Jan 2024</p>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn-outline" style="padding: 0.5rem 1.5rem;" onclick="alert('✏️ Edit your profile information')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn-danger-outline" style="padding: 0.5rem 1.5rem;" onclick="if(confirm('Are you sure you want to sign out?')) { alert('👋 Signed out successfully!'); }">
+                            <i class="fas fa-sign-out-alt"></i> Sign out
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title"><i class="fas fa-crown"></i> Loyalty rewards</div>
+                <div style="padding: 0.5rem 0;">
+                    <div class="flex-between">
+                        <span>💎 Points</span>
+                        <span><strong>1,247</strong></span>
+                    </div>
+                    <div style="background: #e4e0d8; height: 8px; border-radius: 10px; margin: 0.5rem 0; overflow: hidden;">
+                        <div style="background: #c0392b; height: 100%; width: 62%;"></div>
+                    </div>
+                    <div class="flex-between text-small text-muted">
+                        <span>Next tier: Gold (1,500 pts)</span>
+                        <span>253 pts to go</span>
+                    </div>
+                    <div style="margin-top: 1rem; background: #faf8f4; border-radius: 16px; padding: 0.8rem;">
+                        <div class="flex-between text-small">
+                            <span>💰 Points value</span>
+                            <span><strong>$12.47</strong></span>
+                        </div>
+                        <div class="flex-between text-small text-muted">
+                            <span>Available rewards</span>
+                            <span>3 offers</span>
+                        </div>
+                    </div>
+                    <button class="btn-secondary mt-2" onclick="alert('💎 View all your rewards and exclusive offers.')">
+                        <i class="fas fa-gift"></i> View rewards
+                    </button>
+                </div>
+            </div>
+
+            <!-- ============ PREFERENCES BOX ============ -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-cog"></i> Preferences
+                </div>
+                <form id="preferencesForm">
+                    <div class="form-group">
+                        <label>Default dining preference</label>
+                        <select id="prefDining">
+                            <option>Window seat</option>
+                            <option>Booth</option>
+                            <option selected>Outdoor patio</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Dietary restrictions</label>
+                        <div class="toggle-group">
+                            <label class="toggle-label"><input type="checkbox" id="prefVeg" checked> Vegetarian</label>
+                            <label class="toggle-label"><input type="checkbox" id="prefVegan"> Vegan</label>
+                            <label class="toggle-label"><input type="checkbox" id="prefGluten"> Gluten-Free</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Communication</label>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <label class="toggle-label"><input type="checkbox" id="prefEmail" checked> Email updates</label>
+                            <label class="toggle-label"><input type="checkbox" id="prefSMS" checked> SMS notifications</label>
+                            <label class="toggle-label"><input type="checkbox" id="prefPromo"> Promotional offers</label>
+                        </div>
+                    </div>
+                    <div class="preferences-actions">
+                        <button type="button" class="btn-success" onclick="savePreferences()">
+                            <i class="fas fa-save"></i> Save Preferences
+                        </button>
+                    </div>
+                    <div id="preferencesStatus" class="status-message" style="margin-top: 1rem; display: none;">
+                        <i class="fas fa-check-circle"></i> <span id="preferencesStatusText">Preferences saved!</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Preferences saved successfully!</span>
+    </div>
+
+    <!-- Custom Alert Modal for Reservation Success -->
+    <div class="alert-overlay" id="reservationAlert">
+        <div class="alert-modal">
+            <div class="alert-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>Reservation Confirmed!</h2>
+            <p>Your table has been successfully reserved. We look forward to serving you!</p>
+            <div class="alert-details" id="alertDetails">
+                <div><span class="label">Name</span> <span class="value" id="alertName">Alex Rivera</span></div>
+                <div><span class="label">Date & Time</span> <span class="value" id="alertDateTime">Today, 7:30 PM</span></div>
+                <div><span class="label">Guests</span> <span class="value" id="alertGuests">2 people</span></div>
+                <div><span class="label">Seating</span> <span class="value" id="alertSeating">Window Seat</span></div>
+            </div>
+            <button class="btn-primary" onclick="closeReservationAlert()">
+                <i class="fas fa-check"></i> Great, thanks!
+            </button>
+        </div>
+    </div>
+
+    <div style="margin-top: 2.5rem; text-align: center; font-size: 0.8rem; color: #928b7e; border-top: 1px solid #eae5dd; padding-top: 1.5rem;">
+        <i class="fas fa-star" style="color: #c0392b;"></i> Gourmet·app · reserve, pre‑order & delivery · all in one
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ----- MENU DATA -----
+        const menuItems = [
+            { id: 1, name: "Truffle Risotto", desc: "creamy arborio, parmesan", price: 22.50, tags: ['veg'] },
+            { id: 2, name: "Grilled Salmon", desc: "lemon dill sauce, asparagus", price: 28.00, tags: ['gf'] },
+            { id: 3, name: "Classic Burger", desc: "angus beef, cheddar, fries", price: 18.75, tags: [] },
+            { id: 4, name: "Roasted Veggie Bowl", desc: "quinoa, tahini, seasonal", price: 16.00, tags: ['veg', 'vegan', 'gf'] },
+            { id: 5, name: "Spicy Tuna Roll", desc: "fresh tuna, sriracha, avocado", price: 24.50, tags: ['spicy', 'gf'] },
+            { id: 6, name: "Tiramisu", desc: "coffee, mascarpone, cocoa", price: 9.50, tags: ['veg'] },
+            { id: 7, name: "Margherita Pizza", desc: "fresh mozzarella, basil", price: 19.00, tags: ['veg'] },
+            { id: 8, name: "Lobster Bisque", desc: "creamy, sherry, croutons", price: 14.00, tags: ['gf'] },
+        ];
+
+        let preorderCart = {};
+        let deliveryCart = {};
+        let favoriteItems = new Set([1, 2, 5]);
+
+        // ----- TOAST -----
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.className = 'toast show';
+            
+            const icon = toast.querySelector('i');
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+                toast.style.background = '#1e6f2d';
+            } else if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle';
+                toast.style.background = '#c0392b';
+            } else {
+                icon.className = 'fas fa-info-circle';
+                toast.style.background = '#4a6fa5';
+            }
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ----- RESERVATION ALERT -----
+        function showReservationAlert(data) {
+            document.getElementById('alertName').textContent = data.name;
+            document.getElementById('alertDateTime').textContent = data.dateTime;
+            document.getElementById('alertGuests').textContent = data.guests;
+            document.getElementById('alertSeating').textContent = data.seating;
+            document.getElementById('reservationAlert').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        window.closeReservationAlert = function() {
+            document.getElementById('reservationAlert').classList.remove('show');
+            document.body.style.overflow = '';
+        };
+
+        document.getElementById('reservationAlert').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReservationAlert();
+            }
+        });
+
+        // ----- CLOSE APP -----
+        window.closeApp = function() {
+            if (confirm('Are you sure you want to close the app?')) {
+                document.getElementById('appContainer').style.opacity = '0';
+                document.getElementById('appContainer').style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    document.getElementById('appContainer').style.display = 'none';
+                    document.body.innerHTML = `
+                        <div style="text-align: center; padding: 4rem 2rem; max-width: 100%;">
+                            <i class="fas fa-utensils" style="font-size: 4rem; color: #c0392b;"></i>
+                            <h2 style="margin: 1rem 0; color: #1e1e1e;">See you soon!</h2>
+                            <p style="color: #6b655a;">Thank you for using Gourmet·app</p>
+                            <button onclick="location.reload()" style="margin-top: 1.5rem; padding: 0.8rem 2rem; background: #c0392b; color: white; border: none; border-radius: 40px; cursor: pointer; font-weight: 600;">
+                                <i class="fas fa-redo"></i> Reload app
+                            </button>
+                        </div>
+                    `;
+                    document.body.style.display = 'flex';
+                    document.body.style.justifyContent = 'center';
+                    document.body.style.alignItems = 'center';
+                    document.body.style.minHeight = '100vh';
+                    document.body.style.background = '#f8f6f2';
+                    document.body.style.overflow = 'hidden';
+                    document.body.style.margin = '0';
+                    document.body.style.padding = '1.5rem';
+                }, 300);
+            }
+        };
+
+        // ----- RENDER MENU -----
+        function renderMenu(containerId, cartObj, totalId, onChange, filter = 'all') {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+
+            const filteredItems = filter === 'all' 
+                ? menuItems 
+                : menuItems.filter(item => item.tags.includes(filter));
+
+            filteredItems.forEach(item => {
+                const qty = cartObj[item.id] || 0;
+                const isFavorite = favoriteItems.has(item.id);
+                const div = document.createElement('div');
+                div.className = 'menu-item';
+                div.innerHTML = `
+                    <div class="menu-item-info">
+                        <div>
+                            <span class="menu-item-name">${item.name}</span>
+                            ${item.tags.map(tag => {
+                                const tagClass = tag === 'veg' ? 'tag-veg' : tag === 'spicy' ? 'tag-spicy' : 'tag-gf';
+                                const tagLabel = tag === 'veg' ? '🌿' : tag === 'spicy' ? '🌶️' : '🚫';
+                                return `<span class="menu-item-tag ${tagClass}">${tagLabel} ${tag.toUpperCase()}</span>`;
+                            }).join('')}
+                            <button class="favorite-btn ${isFavorite ? 'active' : ''}" data-id="${item.id}" data-cart="${containerId}">
+                                <i class="fa${isFavorite ? 's' : 'r'} fa-heart"></i>
+                            </button>
+                        </div>
+                        <span class="menu-item-desc">${item.desc}</span>
+                        <span class="menu-item-price">$${item.price.toFixed(2)}</span>
+                    </div>
+                    <div class="menu-item-actions">
+                        <div class="qty-selector">
+                            <button data-action="dec" data-id="${item.id}" data-cart="${containerId}">−</button>
+                            <span id="qty-${containerId}-${item.id}">${qty}</span>
+                            <button data-action="inc" data-id="${item.id}" data-cart="${containerId}">+</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            container.querySelectorAll('.qty-selector button').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const id = parseInt(this.dataset.id);
+                    const action = this.dataset.action;
+                    const cartType = this.dataset.cart;
+                    let targetCart = (cartType === 'menuList') ? preorderCart : deliveryCart;
+                    if (action === 'inc') {
+                        targetCart[id] = (targetCart[id] || 0) + 1;
+                    } else if (action === 'dec') {
+                        if (targetCart[id] && targetCart[id] > 0) {
+                            targetCart[id] -= 1;
+                            if (targetCart[id] === 0) delete targetCart[id];
+                        }
+                    }
+                    renderAllMenus();
+                    if (onChange) onChange();
+                });
+            });
+
+            container.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.dataset.id);
+                    if (favoriteItems.has(id)) {
+                        favoriteItems.delete(id);
+                        showToast('Removed from favorites', 'info');
+                    } else {
+                        favoriteItems.add(id);
+                        showToast('Added to favorites ❤️', 'success');
+                    }
+                    renderAllMenus();
+                });
+            });
+
+            updateTotal(containerId, cartObj, totalId);
+        }
+
+        function updateTotal(containerId, cartObj, totalId) {
+            let total = 0;
+            menuItems.forEach(item => {
+                const qty = cartObj[item.id] || 0;
+                total += qty * item.price;
+            });
+            const el = document.getElementById(totalId);
+            if (el) el.textContent = `$${total.toFixed(2)}`;
+            return total;
+        }
+
+        function calculateTax(subtotal) {
+            return subtotal * 0.08;
+        }
+
+        function renderAllMenus() {
+            renderMenu('menuList', preorderCart, 'preorderSubtotal', updatePreorderTotals);
+            updatePreorderTotals();
+
+            renderMenu('deliveryMenuList', deliveryCart, 'deliverySubtotal', updateDeliveryTotals);
+            updateDeliveryTotals();
+        }
+
+        function updatePreorderTotals() {
+            const subtotal = updateTotal('menuList', preorderCart, 'preorderSubtotal');
+            const tax = calculateTax(subtotal);
+            document.getElementById('preorderTax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('preorderGrandTotal').textContent = `$${(subtotal + tax).toFixed(2)}`;
+        }
+
+        function updateDeliveryTotals() {
+            const subtotal = updateTotal('deliveryMenuList', deliveryCart, 'deliverySubtotal');
+            const tax = calculateTax(subtotal);
+            document.getElementById('deliveryTax').textContent = `$${tax.toFixed(2)}`;
+            
+            const tipSelect = document.getElementById('deliveryTip');
+            let tip = parseFloat(tipSelect.value) || 0;
+            if (tipSelect.value === 'custom') {
+                tip = 3.00;
+            }
+            document.getElementById('deliveryTipAmount').textContent = `$${tip.toFixed(2)}`;
+            document.getElementById('deliveryTotal').textContent = `$${(subtotal + tax + tip).toFixed(2)}`;
+        }
+
+        // ----- TAB SWITCHING -----
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            const tabBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+            if (tabBtn) {
+                tabBtn.classList.add('active');
+            }
+            
+            const panel = document.getElementById(tabId);
+            if (panel) {
+                panel.classList.add('active');
+            }
+            
+            renderAllMenus();
+        }
+
+        window.switchTab = switchTab;
+        window.switchToAccountTab = function() {
+            switchTab('tab-account');
+        };
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tabId = this.dataset.tab;
+                switchTab(tabId);
+            });
+        });
+
+        // ----- PREFERENCES -----
+        window.savePreferences = function() {
+            const dining = document.getElementById('prefDining').value;
+            const veg = document.getElementById('prefVeg').checked;
+            const vegan = document.getElementById('prefVegan').checked;
+            const gluten = document.getElementById('prefGluten').checked;
+            const email = document.getElementById('prefEmail').checked;
+            const sms = document.getElementById('prefSMS').checked;
+            const promo = document.getElementById('prefPromo').checked;
+
+            const status = document.getElementById('preferencesStatus');
+            const statusText = document.getElementById('preferencesStatusText');
+            
+            status.style.display = 'flex';
+            status.className = 'status-message success';
+            statusText.innerHTML = `
+                ✅ Preferences saved! 
+                <br><span class="text-small">Dining: ${dining} · 
+                ${veg ? '🌿 Vegetarian ' : ''}${vegan ? '🌱 Vegan ' : ''}${gluten ? '🚫 Gluten-Free' : ''}
+                <br>📧 ${email ? 'Email ' : ''}${sms ? 'SMS ' : ''}${promo ? 'Promotions' : ''}</span>
+            `;
+            
+            showToast('✅ Preferences saved successfully!', 'success');
+            
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        };
+
+        // ----- TIME SLOTS -----
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.addEventListener('click', function() {
+                if (this.classList.contains('unavailable')) return;
+                document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                this.classList.add('selected');
+                const statusText = document.getElementById('resStatusText');
+                if (statusText) {
+                    statusText.textContent = `✅ Selected: ${this.textContent} · ${document.getElementById('resDate').value}`;
+                }
+                const statusDiv = document.getElementById('reservationStatus');
+                if (statusDiv) {
+                    statusDiv.className = 'status-message success';
+                }
+            });
+        });
+
+        // ----- DIETARY FILTERS -----
+        document.querySelectorAll('.dietary-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('.dietary-tag').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const filter = this.dataset.filter;
+                renderMenu('menuList', preorderCart, 'preorderSubtotal', updatePreorderTotals, filter);
+            });
+        });
+
+        // ----- PICKUP TIME CUSTOM -----
+        const pickupTime = document.getElementById('pickupTime');
+        if (pickupTime) {
+            pickupTime.addEventListener('change', function() {
+                const customGroup = document.getElementById('customTimeGroup');
+                if (customGroup) {
+                    customGroup.style.display = this.value === 'custom' ? 'block' : 'none';
+                }
+            });
+        }
+
+        // ----- TIP CHANGE -----
+        const deliveryTip = document.getElementById('deliveryTip');
+        if (deliveryTip) {
+            deliveryTip.addEventListener('change', updateDeliveryTotals);
+        }
+
+        // ----- RESERVATION (UPDATED WITH CUSTOM ALERT) -----
+        const reservationForm = document.getElementById('reservationForm');
+        if (reservationForm) {
+            reservationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('resName').value.trim() || 'Guest';
+                const date = document.getElementById('resDate').value || 'today';
+                const guests = document.getElementById('resGuests').value;
+                const selectedTime = document.querySelector('.time-slot.selected');
+                const time = selectedTime ? selectedTime.dataset.time : '19:00';
+                const occasion = document.getElementById('resOccasion').value;
+                const seating = document.getElementById('resSeating').value;
+                const special = document.getElementById('resSpecial').value || '—';
+                const email = document.getElementById('resEmail').value || '—';
+                const phone = document.getElementById('resPhone').value || '—';
+                
+                // Format date and time
+                const formattedDate = date ? new Date(date + 'T' + time + ':00').toLocaleString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                }) : 'Today';
+                
+                // Format guests
+                const guestText = guests === '1' ? '1 person' : `${guests} people`;
+                
+                // Format seating
+                const seatingMap = {
+                    'window': 'Window Seat',
+                    'booth': 'Booth',
+                    'outdoor': 'Outdoor Patio',
+                    'bar': 'Bar Area',
+                    'private': 'Private Room'
+                };
+                const seatingText = seatingMap[seating] || 'Standard';
+                
+                // Show custom alert with "Reservation Confirmed!"
+                showReservationAlert({
+                    name: name,
+                    dateTime: formattedDate,
+                    guests: guestText,
+                    seating: seatingText
+                });
+                
+                // Update status message
+                const statusDiv = document.getElementById('reservationStatus');
+                const statusText = document.getElementById('resStatusText');
+                if (statusDiv) statusDiv.className = 'status-message success';
+                if (statusText) {
+                    statusText.innerHTML = `
+                        ✅ Reservation confirmed! 
+                        <br><strong>${name}</strong> · ${guestText} · ${formattedDate}
+                        <br>${occasion ? `🎉 ${occasion} · ` : ''}🪑 ${seatingText}
+                        <br><span class="text-small text-muted">📧 ${email} · 📱 ${phone}</span>
+                        <br><span class="text-small">💬 ${special}</span>
+                    `;
+                }
+            });
+        }
+
+        // ----- PREORDER -----
+        const submitPreorderBtn = document.getElementById('submitPreorderBtn');
+        if (submitPreorderBtn) {
+            submitPreorderBtn.addEventListener('click', function() {
+                const items = Object.keys(preorderCart);
+                if (items.length === 0) {
+                    const status = document.getElementById('preorderStatus');
+                    const statusText = document.getElementById('preorderStatusText');
+                    if (status) status.className = 'status-message warning';
+                    if (statusText) statusText.innerHTML = '⚠️ Please add at least one item.';
+                    showToast('⚠️ Please add items to your order', 'error');
+                    return;
+                }
+                const subtotal = updateTotal('menuList', preorderCart, 'preorderSubtotal');
+                const tax = calculateTax(subtotal);
+                const total = subtotal + tax;
+                const pickup = document.getElementById('pickupTime').value;
+                const payment = document.getElementById('preorderPayment').value;
+                const note = document.getElementById('preorderNote').value || '—';
+                
+                const status = document.getElementById('preorderStatus');
+                const statusText = document.getElementById('preorderStatusText');
+                if (status) status.className = 'status-message success';
+                if (statusText) {
+                    statusText.innerHTML = `
+                        ✅ Pre‑order placed! 
+                        <br>Total: <strong>$${total.toFixed(2)}</strong> · ${pickup === 'custom' ? 'Custom time' : pickup}
+                        <br>💳 ${payment} · 📝 ${note}
+                        <br><span class="text-small text-muted">Your order will be ready for pickup.</span>
+                    `;
+                }
+                
+                showToast(`✅ Pre-order placed! Total: $${total.toFixed(2)}`, 'success');
+            });
+        }
+
+        // ----- DELIVERY -----
+        const deliveryOrderBtn = document.getElementById('deliveryOrderBtn');
+        if (deliveryOrderBtn) {
+            deliveryOrderBtn.addEventListener('click', function() {
+                const items = Object.keys(deliveryCart);
+                if (items.length === 0) {
+                    const status = document.getElementById('deliveryStatus');
+                    const statusText = document.getElementById('deliveryStatusText');
+                    if (status) status.className = 'status-message warning';
+                    if (statusText) statusText.innerHTML = '⚠️ Add some items for delivery.';
+                    showToast('⚠️ Please add items to your order', 'error');
+                    return;
+                }
+                const address = document.getElementById('deliveryAddress').value || 'Address missing';
+                const zip = document.getElementById('deliveryZip').value || '—';
+                const phone = document.getElementById('deliveryPhone').value || '—';
+                const preference = document.getElementById('deliveryPreference').value;
+                const note = document.getElementById('deliveryNote').value || '—';
+                const subtotal = updateTotal('deliveryMenuList', deliveryCart, 'deliverySubtotal');
+                const tax = calculateTax(subtotal);
+                const tip = parseFloat(document.getElementById('deliveryTip').value) || 0;
+                const total = subtotal + tax + tip;
+                
+                const status = document.getElementById('deliveryStatus');
+                const statusText = document.getElementById('deliveryStatusText');
+                if (status) status.className = 'status-message success';
+                if (statusText) {
+                    statusText.innerHTML = `
+                        🚚 Order placed! 
+                        <br>Total: <strong>$${total.toFixed(2)}</strong> · ${address} ${zip}
+                        <br>📱 ${phone} · ${preference === 'door' ? '🚪 Leave at door' : '👋 Hand to me'}
+                        <br><span class="text-small text-muted">💬 ${note} · Free delivery</span>
+                        <br><span class="text-small">⏱️ Estimated delivery: 30–45 min</span>
+                    `;
+                }
+                
+                showToast(`✅ Delivery order placed! Total: $${total.toFixed(2)}`, 'success');
+            });
+        }
+
+        // ----- INIT -----
+        const dateInput = document.getElementById('resDate');
+        if (dateInput) {
+            const date = new Date();
+            date.setDate(date.getDate() + 3);
+            dateInput.value = date.toISOString().split('T')[0];
+        }
+
+        renderAllMenus();
+        updatePreorderTotals();
+        updateDeliveryTotals();
+    })();
+</script>
+</body>
+</html>
